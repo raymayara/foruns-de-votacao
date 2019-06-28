@@ -3,7 +3,7 @@ from flask import Flask, render_template, session, redirect, url_for, flash
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
 from flask_wtf import FlaskForm
-from wtforms import IntegerField, SubmitField, HiddenField, StringField, PasswordField
+from wtforms import IntegerField, SubmitField, HiddenField, StringField, TextAreaField
 from wtforms.validators import DataRequired, NumberRange, Length, ValidationError
 #from wtforms.fields.html5 import IntegerField
 from wtforms.widgets.html5 import NumberInput
@@ -54,7 +54,7 @@ class Votos (FlaskForm):
 
 class Cadastro(FlaskForm):
     serie = StringField('Série', validators=[DataRequired(), validate_serie])
-    turma = StringField('Participantes', validators=[DataRequired()])
+    turma = TextAreaField('Participantes', validators=[DataRequired()])
     submit = SubmitField('Cadastro')
 
 class Criar_votacao(FlaskForm):
@@ -77,10 +77,15 @@ class Votacao(db.Model):
 
     titulo= db.Column(db.String (30), primary_key=True)
     opcao1= db.Column(db.String (20), default="")
+    vot1 = db.Column(db.Integer, default=0)
     opcao2= db.Column(db.String (20), default="")
+    vot2 = db.Column(db.Integer, default=0)
     opcao3= db.Column(db.String (20), default="")
+    vot3 = db.Column(db.Integer, default=0)
     opcao4= db.Column(db.String (20), default="")
+    vot4 = db.Column(db.Integer, default=0)
     opcao5= db.Column(db.String (20), default="")
+    vot5= db.Column(db.String (20), default="")
 
     serie = db.Column(db.String(30), db.ForeignKey('Sala.serie'))
 
@@ -102,7 +107,7 @@ def index():
     form = Cadastro()
     votacao = criarVotacao()
     if form.validate_on_submit():
-        db.session.add(Sala(serie=form.serie.data.upper(), senha=form.senha.data)) #cadastra sala
+        db.session.add(Sala(serie=form.serie.data.upper())) #cadastra sala
         cadastraAlunos(form.turma.data, serie=form.serie.data) # cadastra alunos
         db.session.commit()# slava aletrações
         serie=form.serie.data
@@ -119,6 +124,7 @@ def criarVotacao():
             db.session.add(Votacao(titulo=form.titulo.data, opcao1=str(form.opcoes.data), opcao2=str(form.opcoes1.data),opcao3=form.opcoes2.data+"", opcao4=form.opcoes3.data,
             opcao5=form.opcoes4.data, serie=form.serie.data.upper()))#Sala.query.filter_by(serie=form.serie.data.upper()).all()[0]
             db.session.commit()
+            return redirect(url_for('votacaoCriadas'))
     return render_template('criarVotacao.html', form=form)
 
 @app.route('/votacao-criadas', methods=['GET', 'POST'])
@@ -130,6 +136,11 @@ def votacaoCriadas():
         qtd = form.quantidade.data
 
         return redirect(url_for('votacaoCriadas'))'''
-
+    forms = {}
     votacoes = Votacao.query.all()
-    return render_template('votacaoCriadas.html', votacoes=votacoes)
+
+    for v in votacoes:
+        f = Votos(quantidade=0,votacao=v.titulo)
+        forms[v] = f
+
+    return render_template('votacaoCriadas.html', votacoes=votacoes, forms=forms)

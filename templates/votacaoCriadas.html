@@ -53,12 +53,13 @@
             <tr>
               <td>{{ votacao.titulo }}</td>
               <td>{{ votacao.serie }}</td>
-              <td>{{ votacao.opcao1 }}</td>
+              <td>{{ votacao.opcao1 }} {{ wtf.quick_form(forms[votacao]) }}</td>
               <td>{{ votacao.opcao2 }}</td>
               <td>{{ votacao.opcao3 }}</td>
               <td>{{ votacao.opcao4 }}</td>
               <td>{{ votacao.opcao5 }}</td>
               <td>
+
               </td>
             </tr>
           {% endfor %}
