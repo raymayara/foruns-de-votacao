@@ -53,14 +53,12 @@
             <tr>
               <td>{{ votacao.titulo }}</td>
               <td>{{ votacao.serie }}</td>
-              <td>{{ votacao.opcao1 }} {{ wtf.quick_form(forms[votacao]) }}</td>
-              <td>{{ votacao.opcao2 }}</td>
-              <td>{{ votacao.opcao3 }}</td>
-              <td>{{ votacao.opcao4 }}</td>
-              <td>{{ votacao.opcao5 }}</td>
-              <td>
-
-              </td>
+              <td>{{ votacao.opcao1 }} {{ forms[votacao].quantidade(class_="btn") }}</td>
+              <td>{{ votacao.opcao2 }} {{ forms[votacao].quantidade2(class_="btn") }}</td>
+              <td>{{ votacao.opcao3 }} {{ forms[votacao].quantidade3(class_="btn") }}</td>
+              <td>{{ votacao.opcao4 }} {{ forms[votacao].quantidade4(class_="btn") }}</td>
+              <td>{{ votacao.opcao5 }} {{ forms[votacao].quantidade5(class_="btn") }}</td>
+              <td>{{ forms[votacao].submit(class_="btn btn-default") }}</td>
             </tr>
           {% endfor %}
       </tbody>
@@ -75,3 +73,5 @@
 {{ super() }}
 {{ moment.include_moment() }}
 {% endblock %}
+
+<!--{{ wtf.quick_form(forms[votacao]) }}-->

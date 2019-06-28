@@ -47,7 +47,12 @@ def validar_senha(form, field):
         raise ValidationError('Email')
 
 class Votos (FlaskForm):
-    quantidade = IntegerField('Quantidade', validators=[DataRequired()], widget=NumberInput(step=1))
+    quantidade = IntegerField('Quantidade', validators=[DataRequired()], widget=NumberInput(step=1, max=1, min=0))
+    quantidade2 = IntegerField('Quantidade', validators=[DataRequired()], widget=NumberInput(step=1, max=1, min=0))
+    quantidade3 = IntegerField('Quantidade', validators=[DataRequired()], widget=NumberInput(step=1, max=1, min=0))
+    quantidade4 = IntegerField('Quantidade', validators=[DataRequired()], widget=NumberInput(step=1, max=1, min=0))
+    quantidade5 = IntegerField('Quantidade', validators=[DataRequired()], widget=NumberInput(step=1, max=1, min=0))
+
     votacao = HiddenField('ProdutoTipo', validators=[DataRequired()])
 
     submit = SubmitField('votar')
@@ -140,7 +145,7 @@ def votacaoCriadas():
     votacoes = Votacao.query.all()
 
     for v in votacoes:
-        f = Votos(quantidade=0,votacao=v.titulo)
+        f = Votos(quantidade=0,votacao=v.titulo,quantidade2=0,quantidade3=0,quantidade4=0,quantidade5=0)
         forms[v] = f
 
     return render_template('votacaoCriadas.html', votacoes=votacoes, forms=forms)
