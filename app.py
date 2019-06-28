@@ -46,6 +46,12 @@ def validar_senha(form, field):
     if field.data.upper() != str():
         raise ValidationError('Email')
 
+class Votos (FlaskForm):
+    quantidade = IntegerField('Quantidade', validators=[DataRequired()], widget=NumberInput(step=1))
+    votacao = HiddenField('ProdutoTipo', validators=[DataRequired()])
+
+    submit = SubmitField('votar')
+
 class Cadastro(FlaskForm):
     serie = StringField('Série', validators=[DataRequired(), validate_serie])
     turma = StringField('Participantes', validators=[DataRequired()])
@@ -70,11 +76,11 @@ class Votacao(db.Model):
     __tablename__="Votacao"
 
     titulo= db.Column(db.String (30), primary_key=True)
-    opcao1= db.Column(db.String (20))
-    opcao2= db.Column(db.String (20))
-    opcao3= db.Column(db.String (20))
-    opcao4= db.Column(db.String (20))
-    opcao5= db.Column(db.String (20))
+    opcao1= db.Column(db.String (20), default="")
+    opcao2= db.Column(db.String (20), default="")
+    opcao3= db.Column(db.String (20), default="")
+    opcao4= db.Column(db.String (20), default="")
+    opcao5= db.Column(db.String (20), default="")
 
     serie = db.Column(db.String(30), db.ForeignKey('Sala.serie'))
 
@@ -110,11 +116,20 @@ def criarVotacao():
 
     if form.validate_on_submit():
         if form.titulo.data != None or form.opcoes.data != None or form.opcoes1.data != None or form.opcoes2.data != None or form.opcoes3.data != None or form.opcoes4.data != None:
-            db.session.add(Votacao(titulo=form.titulo.data, opcao1=str(form.opcoes.data), opcao2=str(form.opcoes1.data),opcao3=form.opcoes2.data+"", opcao4=str(form.opcoes3.data)+"",
-            opcao5=str(form.opcoes4.data)+"", serie=form.serie.data.upper()))#Sala.query.filter_by(serie=form.serie.data.upper()).all()[0]
+            db.session.add(Votacao(titulo=form.titulo.data, opcao1=str(form.opcoes.data), opcao2=str(form.opcoes1.data),opcao3=form.opcoes2.data+"", opcao4=form.opcoes3.data,
+            opcao5=form.opcoes4.data, serie=form.serie.data.upper()))#Sala.query.filter_by(serie=form.serie.data.upper()).all()[0]
             db.session.commit()
     return render_template('criarVotacao.html', form=form)
 
-@app.route('/votacao-criadas')
+@app.route('/votacao-criadas', methods=['GET', 'POST'])
 def votacaoCriadas():
-    return render_template('votacaoCriadas.html')
+    form = Votos()
+
+    '''if form.validate_on_submit:
+        votacao = form.votacao.data
+        qtd = form.quantidade.data
+
+        return redirect(url_for('votacaoCriadas'))'''
+
+    votacoes = Votacao.query.all()
+    return render_template('votacaoCriadas.html', votacoes=votacoes)

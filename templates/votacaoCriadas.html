@@ -1,4 +1,5 @@
 {% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
 
 {% block title %}Início{% endblock %}
 
@@ -32,16 +33,38 @@
 
 {% block content %}
 <div class="container">
-    {% for message in get_flashed_messages() %}
-    <div class="alert alert-success">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-        {{ message }}
-    </div>
-    {% endfor %}
     {% block page_content %}
       <div class="page-header">
-  
         <h1>Votações Disponíveis</h1>
+        <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Titulo</th>
+          <th scope="col">Serie</th>
+          <th scope="col">opcao1</th>
+          <th scope="col">opcao2</th>
+          <th scope="col">opcao3</th>
+          <th scope="col">opcao4</th>
+          <th scope="col">opcao5</th>
+        </tr>
+      </thead>
+      <tbody>
+          {% for votacao in votacoes %}
+            <tr>
+              <td>{{ votacao.titulo }}</td>
+              <td>{{ votacao.serie }}</td>
+              <td>{{ votacao.opcao1 }}</td>
+              <td>{{ votacao.opcao2 }}</td>
+              <td>{{ votacao.opcao3 }}</td>
+              <td>{{ votacao.opcao4 }}</td>
+              <td>{{ votacao.opcao5 }}</td>
+              <td>
+              </td>
+            </tr>
+          {% endfor %}
+      </tbody>
+    </table>
+
       </div>
     {% endblock %}
     </div>
