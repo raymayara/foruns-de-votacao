@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Início{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+
+  <h1>PARABÉNS!!</h1>
+  <!--{% for message in get_flashed_messages() %}
+    {{ message }}
+  {% endfor %}-->
+  {{ wtf.quick_form(form) }}
+</div>
+{% endblock %}

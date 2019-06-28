@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 from flask import Flask, render_template, session, redirect, url_for, flash
 from flask_bootstrap import Bootstrap
@@ -47,13 +48,12 @@ def validar_senha(form, field):
         raise ValidationError('Email')
 
 class Votos (FlaskForm):
-    quantidade = IntegerField('Quantidade', validators=[DataRequired()], widget=NumberInput(step=1, max=1, min=0))
-    quantidade2 = IntegerField('Quantidade', validators=[DataRequired()], widget=NumberInput(step=1, max=1, min=0))
-    quantidade3 = IntegerField('Quantidade', validators=[DataRequired()], widget=NumberInput(step=1, max=1, min=0))
-    quantidade4 = IntegerField('Quantidade', validators=[DataRequired()], widget=NumberInput(step=1, max=1, min=0))
-    quantidade5 = IntegerField('Quantidade', validators=[DataRequired()], widget=NumberInput(step=1, max=1, min=0))
-
     votacao = HiddenField('ProdutoTipo', validators=[DataRequired()])
+    quantidade = IntegerField('Quantidade', validators=[DataRequired()], widget=NumberInput(step=1, max=1, min=0),default=0)
+    quantidade2 = IntegerField('Quantidade', validators=[DataRequired()], widget=NumberInput(step=1, max=1, min=0),default=0)
+    quantidade3 = IntegerField('Quantidade', validators=[DataRequired()], widget=NumberInput(step=1, max=1, min=0),default=0)
+    quantidade4 = IntegerField('Quantidade', validators=[DataRequired()], widget=NumberInput(step=1, max=1, min=0),default=0)
+    quantidade5 = IntegerField('Quantidade', validators=[DataRequired()], widget=NumberInput(step=1, max=1, min=0),default=0)
 
     submit = SubmitField('votar')
 
@@ -90,7 +90,7 @@ class Votacao(db.Model):
     opcao4= db.Column(db.String (20), default="")
     vot4 = db.Column(db.Integer, default=0)
     opcao5= db.Column(db.String (20), default="")
-    vot5= db.Column(db.String (20), default="")
+    vot5= db.Column(db.Integer, default=0)
 
     serie = db.Column(db.String(30), db.ForeignKey('Sala.serie'))
 
@@ -106,6 +106,14 @@ class Sala(db.Model):
 
     def __repr__ (self):
         return '<serie: %r' % self.serie
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
+@app.errorhandler(500)
+def internal_server_error(e):
+    return render_template('500.html'), 500
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -136,16 +144,29 @@ def criarVotacao():
 def votacaoCriadas():
     form = Votos()
 
-    '''if form.validate_on_submit:
-        votacao = form.votacao.data
-        qtd = form.quantidade.data
+    if form.validate_on_submit():
+        nomVotacao = form.votacao.data
+        votacao = Votacao.query.get(nomVotacao)
+        votacao.vot1 += form.quantidade.data
+        votacao.vot2 += form.quantidade2.data
+        votacao.vot3 += form.quantidade3.data
+        votacao.vot4 += form.quantidade4.data
+        votacao.vot5 += form.quantidade5.data
 
-        return redirect(url_for('votacaoCriadas'))'''
+        db.session.add(votacao)
+        db.session.commit()
+
+        return redirect(url_for('votacaoCriadas', votacoes=votacoes, forms=forms))
+
+    votacoes = Votacao.query.order_by(Votacao.titulo).all()
     forms = {}
-    votacoes = Votacao.query.all()
-
     for v in votacoes:
-        f = Votos(quantidade=0,votacao=v.titulo,quantidade2=0,quantidade3=0,quantidade4=0,quantidade5=0)
+        #f = Votos(votacao=v.titulo,quantidade=v.vot1,quantidade2=v.vot2,quantidade3=v.vot3,quantidade4=v.vot4,quantidade5=v.vot5)
+        f = Votos(votacao=v.titulo,quantidade=0,quantidade2=0,quantidade3=0,quantidade4=0,quantidade5=0)
         forms[v] = f
 
     return render_template('votacaoCriadas.html', votacoes=votacoes, forms=forms)
+
+@app.route('/parabens')
+def parabens():
+    return render_template('parabens.html')

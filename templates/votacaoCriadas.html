@@ -34,6 +34,9 @@
 {% block content %}
 <div class="container">
     {% block page_content %}
+      <!--{% for message in get_flashed_messages() %}
+        {{ message }}-->
+      {% endfor %}-->
       <div class="page-header">
         <h1>Votações Disponíveis</h1>
         <table class="table">
@@ -53,11 +56,11 @@
             <tr>
               <td>{{ votacao.titulo }}</td>
               <td>{{ votacao.serie }}</td>
-              <td>{{ votacao.opcao1 }} {{ forms[votacao].quantidade(class_="btn") }}</td>
-              <td>{{ votacao.opcao2 }} {{ forms[votacao].quantidade2(class_="btn") }}</td>
-              <td>{{ votacao.opcao3 }} {{ forms[votacao].quantidade3(class_="btn") }}</td>
-              <td>{{ votacao.opcao4 }} {{ forms[votacao].quantidade4(class_="btn") }}</td>
-              <td>{{ votacao.opcao5 }} {{ forms[votacao].quantidade5(class_="btn") }}</td>
+              <td>{{ votacao.opcao1 }} <br>vote: {{ forms[votacao].quantidade(class_="btn") }} <br>total: {{ votacao.vot1 }} </td>
+              <td>{{ votacao.opcao2 }} <br>vote: {{ forms[votacao].quantidade2(class_="btn") }} <br>total: {{ votacao.vot2 }}</td>
+              <td>{{ votacao.opcao3 }} <br>vote: {{ forms[votacao].quantidade3(class_="btn") }} <br>total: {{ votacao.vot3 }}</td>
+              <td>{{ votacao.opcao4 }} <br>vote: {{ forms[votacao].quantidade4(class_="btn") }} <br>total: {{ votacao.vot4 }}</td>
+              <td>{{ votacao.opcao5 }} <br>vote: {{ forms[votacao].quantidade5(class_="btn") }} <br>total: {{ votacao.vot5 }}</td>
               <td>{{ forms[votacao].submit(class_="btn btn-default") }}</td>
             </tr>
           {% endfor %}
