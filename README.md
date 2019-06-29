@@ -15,7 +15,7 @@ Configurações:
   >export FLASK_DEBUG=1
 
 
-  **Exceutar**
+  **Executar**
 
   ```
   flask run
